@@ -1,0 +1,22 @@
+spring:
+  datasource:
+      url: jdbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: password
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+    defer-datasource-initialization: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:createSchema.sql
+server:
+  error:
+    include-message: always
+    include-binding-errors: always

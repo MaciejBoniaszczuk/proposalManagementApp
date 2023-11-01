@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:PROPOSAL_DB;DEFAULT_LOCK_TIMEOUT=5000
+    username: proposal
+    password: proposal
+    configuration:
+      minimum-idle: 1
+      maximum-pool-size: 2
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+#  sql:
+#    init:
+#      data-locations: classpath:/sql/schema.sql
