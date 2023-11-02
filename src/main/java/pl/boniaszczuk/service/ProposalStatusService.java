@@ -12,7 +12,7 @@ public class ProposalStatusService {
 
     private final ProposalStatusRepository proposalStatusRepository;
 
-    public ProposalStatus getProposalStatusByIdentifier(ProposalStatusEnum proposalStatusEnum){
+    public ProposalStatus getProposalStatusByIdentifier(ProposalStatusEnum proposalStatusEnum) {
         return proposalStatusRepository.findByIdentifier(proposalStatusEnum)
                 .orElseThrow(() -> new RuntimeException());
     }

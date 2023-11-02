@@ -9,6 +9,7 @@ import pl.boniaszczuk.model.ProposalParams;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @UtilityClass
 public class ProposalSpecification {
     public static Specification<Proposal> withDynamicQuery(ProposalParams params) {

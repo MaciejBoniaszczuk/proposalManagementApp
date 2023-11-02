@@ -205,7 +205,6 @@ class ProposalServiceTest {
         //when,then
         UnableToPublishProposalException exception = assertThrows(UnableToPublishProposalException.class, () -> {
             proposalService.publishProposal(1L);
-            ;
         });
 
         assertEquals(UNABLE_TO_PUBLISH_PROPOSAL, exception.getMessage());
@@ -219,7 +218,6 @@ class ProposalServiceTest {
         //when,then
         UnableToAcceptProposalException exception = assertThrows(UnableToAcceptProposalException.class, () -> {
             proposalService.acceptProposal(1L);
-            ;
         });
         assertEquals(UNABLE_TO_ACCEPT_PROPOSAL, exception.getMessage());
     }
@@ -234,7 +232,6 @@ class ProposalServiceTest {
         //when,then
         UnableToUpdateProposalException exception = assertThrows(UnableToUpdateProposalException.class, () -> {
             proposalService.updateProposal(proposalModel);
-            ;
         });
         assertEquals(UNABLE_TO_UPDATE_PROPOSAL, exception.getMessage());
     }
@@ -247,7 +244,6 @@ class ProposalServiceTest {
         //when,then
         UnableToVerifyProposalException exception = assertThrows(UnableToVerifyProposalException.class, () -> {
             proposalService.verifyProposal(1L);
-            ;
         });
         assertEquals(UNABLE_TO_VERIFY_PROPOSAL, exception.getMessage());
     }

@@ -1,6 +1,5 @@
 package pl.boniaszczuk.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
