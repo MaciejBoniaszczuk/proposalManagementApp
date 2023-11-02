@@ -13,12 +13,12 @@ import pl.boniaszczuk.exception.NoProposalsInDatabaseException;
 import pl.boniaszczuk.exception.ProposalAlreadyExistsException;
 import pl.boniaszczuk.exception.ProposalNotFoundException;
 import pl.boniaszczuk.exception.ReasonNotProvidedException;
-import pl.boniaszczuk.exception.UnableToAcceptProposal;
+import pl.boniaszczuk.exception.UnableToAcceptProposalException;
 import pl.boniaszczuk.exception.UnableToDeleteProposalException;
-import pl.boniaszczuk.exception.UnableToPublishProposal;
+import pl.boniaszczuk.exception.UnableToPublishProposalException;
 import pl.boniaszczuk.exception.UnableToRejectProposalException;
 import pl.boniaszczuk.exception.UnableToUpdateProposalException;
-import pl.boniaszczuk.exception.UnableToVerifyProposal;
+import pl.boniaszczuk.exception.UnableToVerifyProposalException;
 import pl.boniaszczuk.mapper.ProposalMapper;
 import pl.boniaszczuk.model.ActionReason;
 import pl.boniaszczuk.model.ProposalModel;
@@ -37,11 +37,11 @@ import java.util.Optional;
 @Transactional
 public class ProposalService {
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ProposalStatusService proposalStatusService;
     private final ProposalRepository proposalRepository;
     private final ProposalHistoryService proposalHistoryService;
     private final ProposalMapper proposalMapper;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void createProposal(ProposalModel proposalModel) {
         checkIfProposalExists(proposalModel);
@@ -60,8 +60,8 @@ public class ProposalService {
     public Page<ProposalModel> getAll(ProposalParams params, Pageable pageable) {
         Specification<Proposal> specification = ProposalSpecification.withDynamicQuery(params);
         Page<Proposal> proposals = proposalRepository.findAll(specification, pageable);
-        if(proposals.isEmpty()){
-            throw new NoProposalsInDatabaseException("There are no proposals in database");
+        if (proposals.isEmpty()) {
+            throw new NoProposalsInDatabaseException();
         }
         return proposals.map(proposalMapper::mapToModel);
     }
@@ -75,7 +75,7 @@ public class ProposalService {
                         proposal.setDeleteReason(deleteReason.reason());
                         proposalHistoryService.saveDeletionInHistory(proposal);
                     } else {
-                        throw new UnableToDeleteProposalException("Only CREATED proposal can be deleted");
+                        throw new UnableToDeleteProposalException();
                     }
                 },
                 () -> {
@@ -94,7 +94,7 @@ public class ProposalService {
                         proposal.setRejectionReason(rejectReason.reason());
                         proposalHistoryService.saveRejectionInHistory(proposal);
                     } else {
-                        throw new UnableToRejectProposalException("Only VERIFIED or ACCEPTED proposal can be removed");
+                        throw new UnableToRejectProposalException();
                     }
                 },
                 () -> {
@@ -109,7 +109,7 @@ public class ProposalService {
                     if (proposal.getProposalStatus() == proposalStatusService.getProposalStatusByIdentifier(ProposalStatusEnum.CREATED)) {
                         proposal.setProposalStatus(proposalStatusService.getProposalStatusByIdentifier(ProposalStatusEnum.VERIFIED));
                         proposalHistoryService.saveVerifiedInHistory(proposal);
-                    } else throw new UnableToVerifyProposal("Only CREATED proposal can be verified");
+                    } else throw new UnableToVerifyProposalException();
 
                 },
                 () -> {
@@ -125,7 +125,7 @@ public class ProposalService {
                         proposal.setProposalStatus(proposalStatusService.getProposalStatusByIdentifier(ProposalStatusEnum.ACCEPTED));
                         proposalHistoryService.saveAcceptedInHistory(proposal);
                     } else {
-                        throw new UnableToAcceptProposal("Only VERIFIED proposal can be accepted");
+                        throw new UnableToAcceptProposalException();
                     }
                 },
                 () -> {
@@ -142,7 +142,7 @@ public class ProposalService {
                         proposal.setUniqueNumber(getUniqueNumber(proposal.getId()));
                         proposalHistoryService.savePublishedInHistory(proposal);
                     } else {
-                        throw new UnableToPublishProposal("Only ACCEPTED proposal can be published");
+                        throw new UnableToPublishProposalException();
                     }
                 },
                 () -> {
@@ -159,7 +159,7 @@ public class ProposalService {
                             proposal.getProposalStatus().getIdentifier() == ProposalStatusEnum.VERIFIED) {
                         proposal.setContent(proposalModel.getContent());
                     } else {
-                        throw new UnableToUpdateProposalException("Proposal can be updated only for CREATED and VERIFIED proposals.");
+                        throw new UnableToUpdateProposalException();
                     }
                 },
                 () -> {
@@ -170,7 +170,7 @@ public class ProposalService {
 
     private void checkReason(ActionReason deleteReason) {
         if (deleteReason.reason() == null || deleteReason.reason().isEmpty()) {
-            throw new ReasonNotProvidedException("You have to provide reason");
+            throw new ReasonNotProvidedException();
         }
     }
 
