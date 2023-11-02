@@ -16,4 +16,4 @@ run the following command to start the application.
 docker-compose up
 ```
 
-This will start the application along with any other services defined in the `docker-compose.yml` file.
+This will start the application along with database defined in the `docker-compose.yml` file.
